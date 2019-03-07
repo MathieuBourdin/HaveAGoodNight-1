@@ -6,3 +6,11 @@ body {
   background-color: white;
 
 }
+
+#vis1 {
+  opacity: 0.5;
+}
+
+#vis1:hover {
+  opacity: 1;
+}
