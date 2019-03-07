@@ -386,11 +386,11 @@
 
 
         svg2.append("g2").selectAll("g2")
-              .data(layers2)
+              .data2(layers2)
               .enter().append("g2")
               .style("fill", function(d) { return color2(d.key); })
               .selectAll("rect")
-              .data(function(d) {  return d; })
+              .data2(function(d) {  return d; })
               .enter().append("rect")
               .attr("x", function(d, i) { return x2(d.data.date); })
               .attr("y", function(d) { return y2(d[1]); })
