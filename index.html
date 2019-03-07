@@ -341,14 +341,14 @@
           d.idle4 = +d.idle4;
           d.sleep2 = +d.sleep2;
 
-          data.push(d) })
+          data2.push(d) })
           //console.log(jour)
 
 
 
           var data_nest2 = d3.nest()
             .key(function(d) { return d.cobaye; })
-            .entries(data);
+            .entries(data2);
 
 
         	console.log(data_nest2)
