@@ -9,14 +9,13 @@
   <body>
     <h1>Visualisation du projet Have a good Night</h1>
     <div id = "ordonneeDropdown"></div>
-    <script>
+    <script id="vis1">
 
       // Set some margins
     	var margin = {top: 50, right: 20, bottom: 50, left: 80};
 
     	var width = 900 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
-
       // Create the SVG
       var svg = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -248,5 +247,7 @@
     // - faire une indentation propre pour le document
 
      </script>
+     <div id="questions">Les questions que l'on s'est posées</div>
+     <div id="reponses">Les réponses obtenues</div>
   </body>
 </html>
