@@ -11,244 +11,216 @@
     <div id = "ordonneeDropdown"></div>
     <div id="vis1">
       start div
-    <script>
+      <script>
 
-      // Set some margins
-    	var margin = {top: 50, right: 20, bottom: 50, left: 80};
+        // Set some margins
+      	var margin = {top: 50, right: 20, bottom: 50, left: 80};
 
-    	var width = 900 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
-      // Create the SVG
-      var svg = d3.select("#vis1").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      	var width = 900 - margin.left - margin.right;
+        var height = 400 - margin.top - margin.bottom;
 
-      // Scales
-      var y = d3.scaleLinear()
-      	.range([height, 0]);
+        // Create the SVG
+        var svg = d3.select("body").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var t = d3.scaleTime()
-        .range([0, width]);
-      // Date format https://bl.ocks.org/zanarmstrong/ca0adb7e426c12c06a95
-      var parseTime  = d3.timeParse("%d %m %Y")
+        // Scales
+        var y = d3.scaleLinear().range([height, 0]);
 
-      var color = d3.scaleOrdinal(d3.schemeCategory20)
-      // Load stocks data
-      // Ex: 0: {symbol: "MSFT", date: "Jan 2000", price: "39.81"}
-      d3.csv('https://raw.githubusercontent.com/MathieuBourdin/HaveAGoodNight/master/Pr%C3%A9paration%20des%20donn%C3%A9es.csv', function(error, raw) {
+        var t = d3.scaleTime().range([0, width]);
 
-        var symbols = [];
+        var parseTime1  = d3.timeParse("%d %m %Y")
 
-        var data = []
+        var color = d3.scaleOrdinal(d3.schemeCategory20)
+        d3.csv('https://raw.githubusercontent.com/MathieuBourdin/HaveAGoodNight/master/Pr%C3%A9paration%20des%20donn%C3%A9es.csv', function(error, raw) {
 
-        // Data pre-processing
-        raw.forEach(function(d, i) {
-          if(symbols.indexOf(d.individu) < 0) {
-            symbols.push(d.individu)
-            data[symbols.indexOf(d.individu)] = [];
+          var symbols = [];
+          var data = []
+
+          // Data pre-processing
+          raw.forEach(function(d, i) {
+            if(symbols.indexOf(d.individu) < 0) {
+              symbols.push(d.individu)
+              data[symbols.indexOf(d.individu)] = [];
+            }
+
+            // String to float
+            d["Heures de lever"] = +d["heures_de_lever"];
+            d["Heures de coucher"] = +d["heures_de_coucher"];
+            d["Etat de fatigue"] = +d["etat_de_fatigue"];
+            d["Temps de sommeil"] = +d["temps_de_sommeil"];
+            d["heures_de_coucher_rectifiees"] = +d.heures_de_coucher_rectifiees;
+
+            // Parsing time
+            d.date = parseTime1(d["date"])
+            data[symbols.indexOf(d.individu)].push(d);
+            });
+
+          var maxi = function(ordonnee){
+      			if (ordonnee == "Temps de sommeil"){return (10.75)}
+            if (ordonnee == "Heures de lever"){return (14)}
+            if (ordonnee == "Heures de coucher"){return(10)}
+            if (ordonnee == "Etat de fatigue") {return(5)}
           }
 
-          // String to float
-          d.value = +d.heures_de_lever;
-          d.value = +d.heures_de_coucher;
-          d.value = +d.etat_de_fatigue
-          d.value = +d.temps_de_sommeil
-          d.value = +d.heures_de_coucher_rectifiees
+          var nest = d3.nest()
+      		  .key(function(d){
+      		    return d.ordonnees;
+      	  	})
+      		  .key(function(d){
+      		  	return d.date;
+      	  	})
+      	  	.entries(raw)
 
-          // Parsing time
-          d.date = parseTime(d.date)
-          data[symbols.indexOf(d.individu)].push(d);
-        });
+          // Create a dropdown
+          var fruitMenu = d3.select("#ordonneeDropdown")
+          fruitMenu
+      		.append("select")
+      		.selectAll("option")
+              .data(nest)
+              .enter()
+              .append("option")
+              .attr("value", function(d){
+                  return d.key;
+              })
+              .text(function(d){
+                  return d.key;
+              })
 
-        var maxi = function(ordonnee){
-    			if (ordonnee == "temps_de_sommeil"){return (10.75)}
-          if (ordonnee == "heures_de_lever"){return (14)}
-          if (ordonnee == "heures_de_coucher"){return(6)}
-          if (ordonnee == "etat_de_fatigue") {return(5)}
-        }
+          var tracegraphe = function(ordonnee){
 
-        var nest = d3.nest()
-    		  .key(function(d){
-    		    return d.ordonnees;
-    	  	})
-    		  .key(function(d){
-    		  	return d.date;
-    	  	})
-    	  	.entries(raw)
-
-        // Create a dropdown
-        var fruitMenu = d3.select("#ordonneeDropdown")
-        fruitMenu
-    		.append("select")
-    		.selectAll("option")
-            .data(nest)
-            .enter()
-            .append("option")
-            .attr("value", function(d){
-                return d.key;
-            })
-            .text(function(d){
-                return d.key;
-            })
-
-        var ordonnee_choisie;
-
-        var tracegraphe = function(ordonnee){
-
-       	 	svg.append("text")
-        	.attr("transform",
-              "translate("+ 0 +","+ -20 +")")
-        	.style("text-anchor", "middle")
-        	.text("temps_de_sommeil")
-
-          // Calculated on the flat dataset
-        	t.domain(d3.extent(raw, function(d) {
-           	return d.date;
-        	}))
-
-        	y.domain([0,maxi(ordonnee)])
-          //y.domain([0, d3.max(raw, function(d) {
-          //return d[ordonnee];
-        	//})])
-          //y.domain([0,10.75])
-
-        	// We update the x-scale using the Temporal scale t
-        	var xAxis = d3.axisBottom()
-        	.scale(t);
-        	var yAxis = d3.axisLeft()
-        	.scale(y);
-
-        	// Line generator
-       		var line = d3.line()//.curve(d3.curveCardinal)
-          	.x(function(d) { return t(d.date); }) // Update X mapping
-          	.y(function(d) { return y(d[ordonnee]); }) // Update Y mapping
-
-          svg.selectAll(".line").data(data).enter()
-          	.append("path")
-    	      .attr("class", "line")
-      	    .attr("d", function(d) { return line(d); })
-        	  .attr("stroke", function(d, i) { return color(i); })
-          	.attr("fill", "none");
-
-        	xAxis.tickFormat(d3.timeFormat("%a %d"))
-
-        	svg.append('g')
-         	 .attr('transform', 'translate(0,' + height + ')')
-          	.attr('class', 'x axis')
-          	.call(xAxis.ticks(d3.timeDay.every(1)))
-          ;
-
-    	  // text label for the x axis
-      	svg.append("text")
-        	  .attr("transform",
-          	      "translate(" + (width/2) + " ," +
-                               (height + margin.top) + ")")
+            // On affiche le label de l'axe vertical
+         	 	svg.append("text")
+          	.attr("transform",
+                "translate("+ 0 +","+ -20 +")")
           	.style("text-anchor", "middle")
-          	.text("Date");
+          	.text(ordonnee)
 
-        svg.append('g')
-          .attr('transform', 'translate(0,' + 0 + ')')
-          .attr('class', 'y axis')
-          .call(yAxis);
-        }
+            // On définit le domaine de l'axe horizontal
+          	t.domain(d3.extent(raw, function(d) {
+             	return d.date;
+          	}))
 
-        var updategraphe = function( ordonnee ){
-          //We update y axis' text :
-          svg.select("text")
-          .attr("transform", "translate("+ 0 +","+ -20 +")")
-          .style("text-anchor", "middle")
-          .text(ordonnee)
+            // On définit le domaine de l'axe vertical
+            y.domain([0, maxi(ordonnee)])
 
-          // We remove all old axis :
-          svg.selectAll("g").remove()
+          	// We update the x-scale using the Temporal scale t
+          	var xAxis = d3.axisBottom()
+          	.scale(t);
+            // Idem pour l'axe vertical
+          	var yAxis = d3.axisLeft()
+          	.scale(y);
 
-          // We recreate new correct axis :
-        	t.domain(d3.extent(raw, function(d) {
-           	return d.date;
-        	}))
+          	// Line generator
+         		var line = d3.line()//.curve(d3.curveCardinal)
+            	.x(function(d) { return t(d.date); }) // Update X mapping
+            	.y(function(d) { return y(d[ordonnee]); }) // Update Y mapping
 
-          //définition du domaine
-          var mini;
-          if (ordonnee=="heures_de_coucher"){mini = -2} else {mini = 0}
-          y.domain([mini, maxi(ordonnee)])
+            svg.selectAll(".line").data(data).enter()
+            	.append("path")
+      	      .attr("class", "line")
+        	    .attr("d", function(d) { return line(d); })
+          	  .attr("stroke", function(d, i) { return color(i); })
+            	.attr("fill", "none");
 
-          // We update the x-scale using the Temporal scale t
-        	var xAxis = d3.axisBottom()
-        	.scale(t);
-        	var yAxis = d3.axisLeft()
-        	.scale(y);
+          	xAxis.tickFormat(d3.timeFormat("%a %d"))
+            //yAxis.tickFormat(d3.timeFormat("%H %M"))
 
-          xAxis.tickFormat(d3.timeFormat("%a %d"))
+          	svg.append('g')
+           	 .attr('transform', 'translate(0,' + height + ')')
+            	.attr('class', 'x axis')
+            	.call(xAxis.ticks(d3.timeDay.every(1)))
+            ;
 
-        	svg.append('g')
-         	 .attr('transform', 'translate(0,' + height + ')')
-          	.attr('class', 'x axis')
-          	.call(xAxis.ticks(d3.timeDay.every(1)))
-          ;
+      	  // text label for the x axis
+        	svg.append("text")
+          	  .attr("transform",
+            	      "translate(" + (width/2) + " ," +
+                                 (height + margin.top) + ")")
+            	.style("text-anchor", "middle")
+            	.text("Date");
 
           svg.append('g')
-          .attr('transform', 'translate(0,' + 0 + ')')
-          .attr('class', 'y axis')
-          .call(yAxis);
+            .attr('transform', 'translate(0,' + 0 + ')')
+            .attr('class', 'y axis')
+            .call(yAxis);
+          }
 
-          // Line modification
-       		var line = d3.line()//.curve(d3.curveCardinal)
-          	.x(function(d) { return t(d.date); }) // Update X mapping
-          	.y(function(d) { if (d[ordonnee] <= 21) {return y(d[ordonnee])}
+          var updategraphe = function( ordonnee ){
+            //We update y axis' text :
+            svg.select("text")
+            .attr("transform", "translate("+ 0 +","+ -20 +")")
+            .style("text-anchor", "middle")
+            .text(ordonnee)
+
+            // We remove all old axis :
+            svg.selectAll("g").remove()
+
+            //définition du domaine
+            var mini;
+            if (ordonnee=="Heures de coucher"){
+              y.domain([-2,7])
+          	}
             else {
-            	console.log(d["heures_de_coucher_rectifiees"])
-            	return y(d["heures_de_coucher_rectifiees"])
-            } ; }) // Update Y mapping
+              mini = 0
+              y.domain([mini, maxi(ordonnee)])
+            }
 
-          svg.selectAll("path.line").data(data)
-    	      //.attr("class", "line")
-          	.transition()
-            .duration(1000)
-            .attr("d", function(d) { return line(d); })
-            .attr("stroke", function(d, i) { return color(i); })
-          	//.attr("fill", "none");
-        }
+            // We update the x-scale using the Temporal scale t
+          	var xAxis = d3.axisBottom()
+          	.scale(t);
+          	var yAxis = d3.axisLeft()
+          	.scale(y);
 
-        tracegraphe("temps_de_sommeil")
+          	svg.append('g')
+           	 .attr('transform', 'translate(0,' + height + ')')
+            	.attr('class', 'x axis')
+            	.call(xAxis.ticks(d3.timeDay.every(1)))
+            ;
 
-        // Run update function when dropdown selection changes
-     	  fruitMenu.on('change', function(){
-     		// Find which category was selected from the dropdown menu
-     		var selectedOrdonnee = d3.select(this)
-                .select("select")
-                .property("value")
+            svg.append('g')
+            .attr('transform', 'translate(0,' + 0 + ')')
+            .attr('class', 'y axis')
+            .call(yAxis);
 
-        // Run update function with selectedOrdonnee
-        updategraphe(selectedOrdonnee)
+            // Line modification
+         		var line = d3.line()//.curve(d3.curveCardinal)
+            	.x(function(d) { return t(d.date); }) // Update X mapping
+            	.y(function(d) { if (d[ordonnee] <= 21) {return y(d[ordonnee])}
+              else {
+              	return y(d["heures_de_coucher_rectifiees"])
+              } ; }) // Update Y mapping
 
-        })
+            svg.selectAll("path.line").data(data)
+      	      //.attr("class", "line")
+            	.transition()
+              .duration(1000)
+              .attr("d", function(d) { return line(d); })
+              .attr("stroke", function(d, i) { return color(i); })
+            	//.attr("fill", "none");
 
-      });
-    // A faire :
-    // - modifier la liste du menu déroulant pour qu'elle affiche
-    // les choix d'ordonnées au lieu du choix de l'individu (priorité)
-    // Pour cela : rajouter un attribut allant de 1 à nbre_ordonnees_différentes
-    // dans le fichier csv. Remplacer ensuite dans fruitMenu l'attribut
-    // individu par le nouvel attribut, dont les valeurs possibles seront
-    // "temps_de_sommeil", "heures_de_lever", "heures_de_coucher", etc.
-    // A et B seront ensuite remplacés par ces valeurs-là et le reste
-    // fonctionnera bien (FAIT)
-    // - Permettre de réafficher le graphe de départ après avoir changé de graphe (FAIT)
-    // - faire des transitions plus jolies lors des changements de graphes (FAIT)
-    // - actualiser les axes lors du changement de graphes. Méthode :
-    // supprimer les axes et afficher de nouveaux axes (FAIT)
-    // - régler le problème des heures de coucher qui passent de 23h à 1h (FAIT)
-    // - changer l'echelle pour l'état de fatigue, qui est entre 1 et 5 (FAIT)
-    // - afficher les bonnes heures dans le cas des heures de coucher au lieu d'heures négatives
-    // - changer l'affichage du titre des axes pour qu'il soit joli (c'est-à-dire changer les "heures_de_lever" affichées en "Heures de lever").
-    // - Actualiser le tableau avec toutes les données
-    // - commenter le code
-    // - changer les noms pour ne plus faire apparaître de fruits
-    // - faire une indentation propre pour le document
+            xAxis.tickFormat(d3.timeFormat("%a %d"))
+          }
 
-     </script>
+          tracegraphe("Temps de sommeil")
+
+          // Run update function when dropdown selection changes
+       	  fruitMenu.on('change', function(){
+       		// Find which category was selected from the dropdown menu
+       		var selectedOrdonnee = d3.select(this)
+                  .select("select")
+                  .property("value")
+
+          // Run update function with selectedOrdonnee
+          updategraphe(selectedOrdonnee)
+
+          })
+
+        });
+
+       </script>
      end div
       </div>
      <div id="questions">Les questions que l'on s'est posées</div>
