@@ -389,8 +389,8 @@
               .selectAll("rect")
               .data(function(d) {  return d; })
               .enter().append("rect")
-              .attr("x", function(d, i) { return x(d.data.date); })
-              .attr("y", function(d) { return y(d[1]); })
+              .attr("x", function(d, i) { return x2(d.data.date); })
+              .attr("y", function(d) { return y2(d[1]); })
               .attr("height", function(d) { return y(d[0]) - y(d[1]); })
               .attr("width", x2.bandwidth());
 
