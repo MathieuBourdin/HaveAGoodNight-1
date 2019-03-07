@@ -34,7 +34,7 @@
         var parseTime1  = d3.timeParse("%d %m %Y")
 
         var color = d3.scaleOrdinal(d3.schemeCategory20)
-        d3.csv('https://raw.githubusercontent.com/MathieuBourdin/HaveAGoodNight/master/Pr%C3%A9paration%20des%20donn%C3%A9es.csv', function(error, raw) {
+        d3.csv('data1.csv', function(error, raw) {
 
           var symbols = [];
           var data = []
