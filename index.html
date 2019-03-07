@@ -320,7 +320,7 @@
      var svg2 = d3.select("#vis2").append("svg")
             .attr("width", width2 + margin2.left + margin2.right)
             .attr("height", height2 + margin2.top + margin2.bottom)
-            .append("g2")
+            .append("g")
             .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
     var jour2 =[]
@@ -385,9 +385,9 @@
 
 
 
-        svg2.append("g2").selectAll("g2")
+        svg2.append("g").selectAll("g")
               .data2(layers2)
-              .enter().append("g2")
+              .enter().append("g")
               .style("fill", function(d) { return color2(d.key); })
               .selectAll("rect")
               .data2(function(d) {  return d; })
@@ -397,12 +397,12 @@
               .attr("height", function(d) { return y2(d[0]) - y2(d[1]); })
               .attr("width", x2.bandwidth());
 
-        svg2.append("g2")
+        svg2.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height2 + ")")
           .call(d3.axisBottom(x2))
 
-        svg2.append("g2")
+        svg2.append("g")
           .attr("class", "y axis")
           .attr("transform", "translate(" + (0) + ", 0)")
           .call(d3.axisLeft().scale(y2))
