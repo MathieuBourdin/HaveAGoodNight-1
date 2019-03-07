@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+svg1<!DOCTYPE html>
 <html>
   <head>
     <title>Have a good night</title>
@@ -37,7 +37,7 @@
     Les visualisations : Pour atteindre nos objectifs nous avons créé trois visualisations des données :
   </br>
   <ol>
-    <li>Le temps de sommeil par nuit</li>
+    <li>Les données brutes par jour</li>
     <li>Les plages d'activité journalières classées en trois catégories : endormi, en cours au repos</li>
     <li>Le lien entre l'état de fatique et le temps de sommeil</li>
   </ol>
@@ -54,8 +54,8 @@
       	var width = 900 - margin.left - margin.right;
         var height = 400 - margin.top - margin.bottom;
 
-        // Create the SVG
-        var svg = d3.select("#vis1").append("svg")
+        // Create the svg1
+        var svg1 = d3.select("#vis1").append("svg")
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom)
           .append("g")
@@ -127,7 +127,7 @@
           var tracegraphe = function(ordonnee){
 
             // On affiche le label de l'axe vertical
-         	 	svg.append("text")
+         	 	svg1.append("text")
           	.attr("transform",
                 "translate("+ 0 +","+ -20 +")")
           	.style("text-anchor", "middle")
@@ -153,7 +153,7 @@
             	.x(function(d) { return t(d.date); }) // Update X mapping
             	.y(function(d) { return y(d[ordonnee]); }) // Update Y mapping
 
-            svg.selectAll(".line").data(data).enter()
+            svg1.selectAll(".line").data(data).enter()
             	.append("path")
       	      .attr("class", "line")
         	    .attr("d", function(d) { return line(d); })
@@ -163,21 +163,21 @@
           	xAxis.tickFormat(d3.timeFormat("%a %d"))
             //yAxis.tickFormat(d3.timeFormat("%H %M"))
 
-          	svg.append('g')
+          	svg1.append('g')
            	 .attr('transform', 'translate(0,' + height + ')')
             	.attr('class', 'x axis')
             	.call(xAxis.ticks(d3.timeDay.every(1)))
             ;
 
       	  // text label for the x axis
-        	svg.append("text")
+        	svg1.append("text")
           	  .attr("transform",
             	      "translate(" + (width/2) + " ," +
                                  (height + margin.top) + ")")
             	.style("text-anchor", "middle")
             	.text("Date");
 
-          svg.append('g')
+          svg1.append('g')
             .attr('transform', 'translate(0,' + 0 + ')')
             .attr('class', 'y axis')
             .call(yAxis);
@@ -185,13 +185,13 @@
 
           var updategraphe = function( ordonnee ){
             //We update y axis' text :
-            svg.select("text")
+            svg1.select("text")
             .attr("transform", "translate("+ 0 +","+ -20 +")")
             .style("text-anchor", "middle")
             .text(ordonnee)
 
             // We remove all old axis :
-            svg.selectAll("g").remove()
+            svg1.selectAll("g").remove()
 
             //définition du domaine
             var mini;
@@ -209,13 +209,13 @@
           	var yAxis = d3.axisLeft()
           	.scale(y);
 
-          	svg.append('g')
+          	svg1.append('g')
            	 .attr('transform', 'translate(0,' + height + ')')
             	.attr('class', 'x axis')
             	.call(xAxis.ticks(d3.timeDay.every(1)))
             ;
 
-            svg.append('g')
+            svg1.append('g')
             .attr('transform', 'translate(0,' + 0 + ')')
             .attr('class', 'y axis')
             .call(yAxis);
@@ -228,7 +228,7 @@
               	return y(d["heures_de_coucher_rectifiees"])
               } ; }) // Update Y mapping
 
-            svg.selectAll("path.line").data(data)
+            svg1.selectAll("path.line").data(data)
       	      //.attr("class", "line")
             	.transition()
               .duration(1000)
