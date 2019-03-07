@@ -1,4 +1,4 @@
-svg1<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <title>Have a good night</title>
@@ -272,7 +272,7 @@ svg1<!DOCTYPE html>
 
 
      -->
-    <!-- <div id="vis2">
+    <div id="vis2">
       <h2>Graphe des plages d'activité</h2>
     </div>
     <div id="form">
@@ -314,7 +314,7 @@ svg1<!DOCTYPE html>
     			.range(["#F7F7F0", "#4D006C", "#F7F7F0", "#FAEC7F ","#F7F7F0", "#FAEC7F ", "#F7F7F0", "#4D006C"]);
 
 
-     var svg = d3.select("#vis2").append("svg")
+     var svg2 = d3.select("#vis2").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -382,7 +382,7 @@ svg1<!DOCTYPE html>
 
 
 
-        svg.append("g").selectAll("g")
+        svg2.append("g").selectAll("g")
               .data(layers)
               .enter().append("g")
               .style("fill", function(d) { return color(d.key); })
@@ -394,12 +394,12 @@ svg1<!DOCTYPE html>
               .attr("height", function(d) { return y(d[0]) - y(d[1]); })
               .attr("width", x.bandwidth());
 
-        svg.append("g")
+        svg2.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(x))
 
-        svg.append("g")
+        svg2.append("g")
           .attr("class", "y axis")
           .attr("transform", "translate(" + (0) + ", 0)")
           .call(d3.axisLeft().scale(y))
@@ -409,7 +409,7 @@ svg1<!DOCTYPE html>
           //var id = changed();
         });
 
-    </script> -->
+    </script>
 
 
      <div id="questions">Les questions que l'on s'est posées</div>
