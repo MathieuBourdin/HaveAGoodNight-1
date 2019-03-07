@@ -42,7 +42,7 @@
     <li>Le lien entre l'état de fatique et le temps de sommeil</li>
   </ol>
     </div>
-<!-- 
+<!--
     <div id="vis1">
       <h2>Graphe des temps de sommeil au fil du temps</h2>
       <div id = "ordonneeDropdown"></div>
@@ -303,11 +303,11 @@ var formatTime = d3.timeFormat("%a %d")
 var data = []
 var Symbols = ["idle1","sleep1","idle2","cours1","idle3","cours2","idle4","sleep2"]
 
-var yStack = d3.scaleLinear()
+var y = d3.scaleLinear()
     .rangeRound([height, 0])
 		.nice();
 
-var xStack = d3.scaleBand()
+var x = d3.scaleBand()
     .rangeRound([0, width])
     .paddingInner(0.05)
     .align(0.1)
@@ -317,7 +317,7 @@ var color = d3.scaleOrdinal()
 			.range(["#F7F7F0", "#4D006C", "#F7F7F0", "#FAEC7F ","#F7F7F0", "#FAEC7F ", "#F7F7F0", "#4D006C"]);
 
 
- var svgStack = d3.select("vis2").append("svg")
+ var svg = d3.select("#vis2").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -379,33 +379,33 @@ var jour =[]
   		var layers = d3.stack().keys(Symbols)(data_cobaye.values)
       //console.log(layers)
 
-     yStack.domain([0, 24]);
-      xStack.domain(jour);
+     y.domain([0, 24]);
+      x.domain(jour);
 
 
 
 
-    svgStack.append("g").selectAll("g")
+    svg.append("g").selectAll("g")
           .data(layers)
           .enter().append("g")
           .style("fill", function(d) { return color(d.key); })
           .selectAll("rect")
           .data(function(d) {  return d; })
           .enter().append("rect")
-          .attr("x", function(d, i) { return xStack(d.data.date); })
-          .attr("y", function(d) { return yStack(d[1]); })
-          .attr("height", function(d) { return yStack(d[0]) - yStack(d[1]); })
-          .attr("width", xStack.bandwidth());
+          .attr("x", function(d, i) { return x(d.data.date); })
+          .attr("y", function(d) { return y(d[1]); })
+          .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+          .attr("width", x.bandwidth());
 
-    svgStack.append("g")
+    svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(xStack))
+      .call(d3.axisBottom(x))
 
-    svgStack.append("g")
+    svg.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate(" + (0) + ", 0)")
-      .call(d3.axisLeft().scale(yStack))
+      .call(d3.axisLeft().scale(y))
 
 
     }
@@ -413,7 +413,6 @@ var jour =[]
     });
 
 </script>
-
 
      <div id="questions">Les questions que l'on s'est posées</div>
      <div id="reponses">Les réponses obtenues</div>
