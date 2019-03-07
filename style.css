@@ -1,5 +1,7 @@
 body {
-  background-color: #F0F8FF;
+  /* background-color: #F0F8FF; */
+  color: white;
+  background-color: black;
 }
 /*
 #total {
@@ -31,7 +33,7 @@ body {
 
 #carreclass {
  width:30px;
- height:30px;
+ height:100px;
  background:#FAEC7F;
  margin:10px auto;
 }
