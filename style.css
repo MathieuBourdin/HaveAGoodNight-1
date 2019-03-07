@@ -14,3 +14,25 @@ body {
 #vis1:hover {
   opacity: 1;
 } */
+
+#carreidle {
+ width:100px;
+ height:100px;
+ background:#F7F7F0;
+ margin:10px auto;
+}
+
+
+#carresleep {
+ width:100px;
+ height:100px;
+ background:#4D006C;
+ margin:10px auto;
+}
+
+#carreclass {
+ width:100px;
+ height:100px;
+ background:#F7F7F0;
+ margin:10px auto;
+}

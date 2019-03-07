@@ -257,9 +257,161 @@
 
        </script>
       </div>
+      <!--
+
+
+
+########################################################################
+########################################################################
+########################################################################
+
+
+
+
+
+
+
+     -->
     <div id="vis2">
-      <h2>Graphe des temps de sommeil au fil du temps</h2>
+      <h2>Graphe des plages d'activité</h2>
     </div>
+    <div id="form">
+    <form>
+          <label> Cobaye :
+      		<input type="radio" name="mode" value= "A" checked> A
+    		  <input type="radio" name="mode" value= "B" > B
+      		<input type="radio" name="mode" value= "C" > C  </label>
+    </form>
+    </div>
+
+    <div id="legende"> <div id="carreidle"></div> idle <div id="carresleep"></div> sleep    <div id="carreclass"></div> class</div>
+
+    <body>
+    <script>
+
+    var margin = {top: 20, right: 30, bottom: 50, left: 40},
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    var parseTime  = d3.timeParse("%d %m %Y")
+    var formatTime = d3.timeFormat("%a %d")
+
+    var data = []
+    var Symbols = ["idle1","sleep1","idle2","cours1","idle3","cours2","idle4","sleep2"]
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0])
+    		.nice();
+
+    var x = d3.scaleBand()
+        .rangeRound([0, width])
+        .paddingInner(0.05)
+        .align(0.1)
+
+    var z = d3.scaleOrdinal(d3.schemeCategory20)
+    var color = d3.scaleOrdinal()
+    			.domain(Symbols)
+    			.range(["#F7F7F0", "#4D006C", "#F7F7F0", "#FAEC7F ","#F7F7F0", "#FAEC7F ", "#F7F7F0", "#4D006C"]);
+
+
+     var svg = d3.select("#vis2").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var jour =[]
+      d3.csv("Sommeil_chart.csv", function(error, raw) {
+
+
+        // Data pre-processing
+        raw.forEach(function(d) {
+
+          //date
+          d.date = formatTime(parseTime(d.date));
+          jour.push(d.date);
+          // String to float
+          d.cobaye = d.cobaye;
+          d.idle1 = +d.idle1;
+          d.sleep1 = +d.sleep1;
+          d.idle2 = +d.idle2;
+          d.cours1 = +d.cours1;
+          d.idle3 = +d.idle3;
+          d.cours2 = +d.cours2;
+          d.idle4 = +d.idle4;
+          d.sleep2 = +d.sleep2;
+
+          data.push(d) })
+          //console.log(jour)
+
+
+
+          var data_nest = d3.nest()
+            .key(function(d) { return d.cobaye; })
+            .entries(data);
+
+
+        	console.log(data_nest)
+
+      		console.log(Symbols)
+          stackbar(0);
+          // Executes the function changed() if the input are changed
+      		d3.selectAll("input").on("change",changed);
+
+          function changed() {
+      				if (this.value ==="A") stackbar(0);
+      				else if (this.value ==="B") stackbar(1);
+              else stackbar(2);
+      			}
+
+
+        function stackbar(id){
+
+
+          //console.log(id)
+          var data_cobaye = data_nest[id]
+
+          //console.log(data_cobaye)
+
+      		var layers = d3.stack().keys(Symbols)(data_cobaye.values)
+          //console.log(layers)
+
+         y.domain([0, 24]);
+          x.domain(jour);
+
+
+
+
+        svg.append("g").selectAll("g")
+              .data(layers)
+              .enter().append("g")
+              .style("fill", function(d) { return color(d.key); })
+              .selectAll("rect")
+              .data(function(d) {  return d; })
+              .enter().append("rect")
+              .attr("x", function(d, i) { return x(d.data.date); })
+              .attr("y", function(d) { return y(d[1]); })
+              .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+              .attr("width", x.bandwidth());
+
+        svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x))
+
+        svg.append("g")
+          .attr("class", "y axis")
+          .attr("transform", "translate(" + (0) + ", 0)")
+          .call(d3.axisLeft().scale(y))
+
+
+        }
+          //var id = changed();
+        });
+
+    </script>
+
+
      <div id="questions">Les questions que l'on s'est posées</div>
      <div id="reponses">Les réponses obtenues</div>
    </div>
