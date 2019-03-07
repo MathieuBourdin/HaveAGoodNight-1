@@ -385,7 +385,7 @@
         svg2.append("g2").selectAll("g2")
               .data(layers2)
               .enter().append("g2")
-              .style("fill", function(d) { return color(d.key); })
+              .style("fill", function(d) { return color2(d.key); })
               .selectAll("rect")
               .data(function(d) {  return d; })
               .enter().append("rect")
