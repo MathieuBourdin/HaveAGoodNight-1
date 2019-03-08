@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Have a good night</title>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+        <a href="index.html">Retour à la page d'accueil</a>
+        <a href="vis1.html">Visualisation 1</a>
+        <a href="vis2.html">Visualisation 2</a>
+        <div class="vis" id="vis1">
+        </div>
+      <!--
+        <div class="vis" id="vis2">
+        </div> -->
+
+        <script>
+
+          var documentHeight = 500;
+          var documentWidth = 960;
+          console.log(documentHeight)
+
+          var newCloud = function(data, locationID){
+            console.log("New Cloud")
+            var containerCanvas = d3.select(locationID).append("svg")
+                                    .attr("width", documentWidth+60)
+                                    .attr("height", documentHeight+60)
+            var dataLength = data.length
+            // var sum = 0
+            data.forEach(function(element){
+              // sum = sum + parseInt(element["value"])
+              // console.log(sum)
+              containerCanvas.append("circle")
+                              .attr("cx", element["temps_de_sommeil"]*documentWidth/12+35)
+                              .attr("cy", documentHeight-element["etat_de_fatigue"]*documentHeight/5+35)
+                              .attr("r", 5)
+            })
+            // var scale = d3.scaleLinear()
+            //               .domain([0, 550])
+            //               .range([5, 541])
+            // var max_temps = d3.max(data, function(d) {
+            //   return(d["temps_de_sommeil"])})
+            //
+            // var min_temps = d3.min(data, function(d) {
+            //   return(d["temps_de_sommeil"])})
+            //
+            // var max_fatigue = d3.max(data, function(d) {
+            //   return(d["etat_de_fatigue"])})
+            //
+            // var min_fatigue = d3.min(data, function(d) {
+            //   return(d["etat_de_fatigue"])})
+            //
+            //   console.log(min_temps)
+            //   console.log(max_temps)
+            //   console.log(max_fatigue)
+            //   console.log(min_fatigue)
+
+            var temps_sommeil = d3.scaleLinear().range([0,documentWidth]).domain([0, 12]);
+            var etat_fatigue = d3.scaleLinear().range([documentHeight, 0]).domain([0, 5]);
+
+            var xAxis = d3.axisBottom()
+              .scale(temps_sommeil);
+
+            var yAxis = d3.axisLeft()
+              .scale(etat_fatigue);
+
+            containerCanvas.append('g')
+              .attr('transform', 'translate('+30+','+30+')')
+              .attr('class', 'y axis')
+              .call(yAxis);
+
+            containerCanvas.append('g')
+              .attr('transform', 'translate('+30+',' + (documentHeight+30) + ')')
+              .attr('class', 'x axis')
+              .call(xAxis);
+          }
+
+          d3.csv('fatigue_temps.csv', function(error, data){
+            newCloud(data, "#vis1")
+          });
+
+          // d3.csv('data2.csv', function(error, data){
+          //   newBarGraph(data, "#vis2")
+          // });
+
+        </script>
+</body>
