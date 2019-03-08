@@ -1,21 +1,10 @@
 body {
   background-color: #F0F8FF;
-  /* color: white;
-  background-color: black; */
-}
-/*
-#total {
-  background-color: white;
-  opacity: 0.5;
-} */
-
-/* #vis1 {
-  opacity: 0.5;
 }
 
-#vis1:hover {
-  opacity: 1;
-} */
+circle {
+  color: #4D006C;
+}
 
 #carreidle {
  width:30px;
