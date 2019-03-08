@@ -25,6 +25,7 @@
 
           var newCloud = function(data, locationID){
             console.log("New Cloud")
+            console.log(data)
             var containerCanvas = d3.select(locationID).append("svg")
                                     .attr("width", documentWidth+60)
                                     .attr("height", documentHeight+60)
