@@ -48,10 +48,17 @@ L'idée de cette visualisation est de réprésenter en fonction du temps au choi
 		- L'état de fatigue
 		
 		
-Cette visualisation ne permet pas de montrer de lien entre les différents critères, mais à l'avantage, pour le temps de sommeil par exemple de visualiser le temps de sommeil effectif par rapport au temps de sommeil idéal (8h).
+Cette visualisation ne permet pas de montrer de lien entre les différents critères, mais permet de comparer les données obtenues pour les différents individus.
 
+Ce graphique a été réalisé en s'inspirant de l'architecture du code suivant :
+https://bl.ocks.org/ProQuestionAsker/8382f70af7f4a7355827c6dc4ee8817d
 
-Nous remarquons que nous ne dormons globalement pas assez.
+Les différents constats que permet de tirer cette visualisation sont les suivants: *
+- les trois individus étudiés ont tous les trois des rythmes de sommeil très distints les uns des autres et sont tous les trois en moyenne légèrement en-dessous de la barre des 8 heures de sommeil par nuit conseillées (environ 7 heures et demi en moyenne). 
+- pour chaque individu, les données récoltées sont très irrégulières quelque soit la donnée affichée (heure de coucher, heure de lever, temps de sommeil ou état de fatigue). Des pics et des creux sont visibles sur les graphes, les nuits ne sont pas du tout régulières.
+- plusieurs comportements particuliers sont  visibles sur les courbes, comme la présence d'un weekend d'étage pour l'individu bleu foncé ou de cours à 8 heures lorsque les individus se lèvent à 7 heures (ce qui est globalement sous leur comportement habituel).
+- les heures de coucher se situent globalement entre minuit et deux heures du matin ; les heures de lever se situent globalement entre 7 heures et 10 heures.
+- l'individu bleu foncé est celui qui a les heures de coucher les plus tardives tandis que l'individu orange est celui qui a les nuits les plus courtes.
 
 
 Visualisation 2 : https://g-mizrahi.github.io/HaveAGoodNight/vis2.html
